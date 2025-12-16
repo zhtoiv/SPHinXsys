@@ -233,15 +233,13 @@ int main(int ac, char *av[])
     InteractionWithUpdate<solid_dynamics::PressureForceFromFluid<decltype(density_relaxation)>>
         pressure_force_on_cylinder(cylinder_contact);
 
-    // Solid dynamics
-    ReduceDynamics<solid_dynamics::AcousticTimeStep>
-        cylinder_get_time_step_size(cylinder);
+    // Solid dynamics - simplified for rigid body
     SimpleDynamics<solid_dynamics::UpdateElasticNormalDirection>
         cylinder_update_normal(cylinder);
-    Dynamics1Level<solid_dynamics::Integration1stHalf>
-        cylinder_stress_relaxation_first_half(cylinder_inner);
-    Dynamics1Level<solid_dynamics::Integration2ndHalf>
-        cylinder_stress_relaxation_second_half(cylinder_inner);
+
+    // Rigid body time step
+    ReduceDynamics<solid_dynamics::AcousticTimeStep>
+        cylinder_get_time_step_size(cylinder);
 
     // Particle sorting for efficiency
     ParticleSorting particle_sorting(water_block);
@@ -336,14 +334,12 @@ int main(int ac, char *av[])
                 // Fluid dynamics
                 pressure_relaxation.exec(dt);
 
-                // FSI coupling
+                // FSI coupling - forces on cylinder
                 viscous_force_on_cylinder.exec();
                 pressure_force_on_cylinder.exec();
 
-                // Solid dynamics
-                cylinder_stress_relaxation_first_half.exec(dt);
+                // Apply gravity to cylinder
                 constant_gravity_to_cylinder.exec();
-                cylinder_stress_relaxation_second_half.exec(dt);
 
                 // Fluid dynamics continues
                 density_relaxation.exec(dt);
