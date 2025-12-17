@@ -253,8 +253,7 @@ int main(int ac, char *av[])
     body_states_recording.addToWrite<Real>(water_block, "Density");
     body_states_recording.addToWrite<int>(water_block, "SurfaceIndicator");
     body_states_recording.addToWrite<Vecd>(water_block, "Velocity");
-    body_states_recording.addToWrite<Vecd>(cylinder, "Velocity");
-    body_states_recording.addToWrite<Vecd>(cylinder, "AccelerationPrior");
+    // Note: Cylinder velocity is recorded via observer, not per-particle
     body_states_recording.addToWrite<Vecd>(wall_boundary, "NormalDirection");
 
     // Observer data recording for 6-DOF motion analysis
